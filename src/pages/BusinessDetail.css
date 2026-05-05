@@ -1,0 +1,170 @@
+.business-detail-container {
+  min-height: 100vh;
+  background: #f7fafc;
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.back-button {
+  background: white;
+  border: 2px solid #e2e8f0;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #4a5568;
+  cursor: pointer;
+  margin-bottom: 24px;
+  transition: all 0.2s;
+}
+
+.back-button:hover {
+  border-color: #667eea;
+  color: #667eea;
+}
+
+.business-header {
+  background: white;
+  border-radius: 12px;
+  padding: 32px;
+  margin-bottom: 32px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.business-header-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.business-header h1 {
+  margin: 0;
+  font-size: 32px;
+  color: #1a202c;
+}
+
+.category-badge {
+  background: #667eea;
+  color: white;
+  padding: 6px 16px;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.business-description-full {
+  color: #4a5568;
+  line-height: 1.6;
+  margin: 16px 0 24px 0;
+}
+
+.business-contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #2d3748;
+}
+
+.contact-item .icon {
+  font-size: 18px;
+}
+
+.services-section {
+  background: white;
+  border-radius: 12px;
+  padding: 32px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.services-section h2 {
+  margin: 0 0 24px 0;
+  font-size: 24px;
+  color: #1a202c;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.service-card {
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 20px;
+  transition: all 0.2s;
+}
+
+.service-card:hover {
+  border-color: #667eea;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.service-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.service-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #1a202c;
+  flex: 1;
+}
+
+.service-price {
+  background: #f7fafc;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  color: #667eea;
+  white-space: nowrap;
+}
+
+.service-description {
+  color: #718096;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0 0 12px 0;
+}
+
+.service-duration {
+  color: #4a5568;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.service-card .btn-primary {
+  width: 100%;
+}
+
+.error-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .business-header-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .services-grid {
+    grid-template-columns: 1fr;
+  }
+}
