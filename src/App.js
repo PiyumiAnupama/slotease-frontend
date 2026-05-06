@@ -5,6 +5,14 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Home from './pages/Home';
 import BusinessDetail from './pages/BusinessDetail';
+import BookAppointment from './pages/BookAppointment';
+import MyAppointments from './pages/MyAppointments';
+import MyBusiness from './pages/MyBusiness';
+
+
+
+
+
 
 // Protected Route Component
 function ProtectedRoute({ children }) {
@@ -49,8 +57,34 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/book/:serviceId"
+            element={
+              <ProtectedRoute>
+                <BookAppointment />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+  path="/my-appointments"
+  element={
+    <ProtectedRoute>
+      <MyAppointments />
+    </ProtectedRoute>
+  }
+/>
+<Route
+  path="/my-business"
+  element={
+    <ProtectedRoute>
+      <MyBusiness />
+    </ProtectedRoute>
+  }
+/>
         </Routes>
+        
       </Router>
+      
     </AuthProvider>
   );
 }
