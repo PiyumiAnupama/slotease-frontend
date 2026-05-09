@@ -80,9 +80,9 @@ function MyBusiness() {
   if (businesses.length === 0) {
     return (
       <div className="no-business-container">
-        <button onClick={() => navigate('/')} className="back-button">
-          ← Back to Home
-        </button>
+       <button onClick={() => navigate('/register-business')} className="btn-primary">
+  Register Your Business
+</button>
         <div className="empty-state">
           <div className="empty-icon">🏢</div>
           <h2>No Business Registered</h2>
@@ -90,9 +90,9 @@ function MyBusiness() {
           <p className="helper-text">
             To register your business, please contact the administrator or use the business registration form.
           </p>
-          <button onClick={() => navigate('/')} className="btn-primary">
-            Back to Home
-          </button>
+          <button onClick={() => navigate('/register-business')} className="btn-primary">
+  Register Your Business
+</button>
         </div>
       </div>
     );

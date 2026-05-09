@@ -8,12 +8,18 @@ import BusinessDetail from './pages/BusinessDetail';
 import BookAppointment from './pages/BookAppointment';
 import MyAppointments from './pages/MyAppointments';
 import MyBusiness from './pages/MyBusiness';
+import NotFound from './pages/NotFound';
+import RegisterBusiness from './pages/RegisterBusiness';
 
 
-
-
-
-
+<Route
+  path="/register-business"
+  element={
+    <ProtectedRoute>
+      <RegisterBusiness />
+    </ProtectedRoute>
+  }
+/>
 // Protected Route Component
 function ProtectedRoute({ children }) {
   const { user, loading } = useContext(AuthContext);
@@ -81,6 +87,8 @@ function App() {
     </ProtectedRoute>
   }
 />
+
+<Route path="*" element={<NotFound />} />
         </Routes>
         
       </Router>
@@ -88,5 +96,6 @@ function App() {
     </AuthProvider>
   );
 }
+
 
 export default App;

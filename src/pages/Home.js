@@ -79,31 +79,42 @@ function Home() {
         </div>
       </section>
 
-      {/* Search & Filter */}
-      <div className="search-section">
-        <div className="search-container">
-          <input
-            type="text"
-            placeholder="Search businesses..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
-          />
-          <select
-            value={categoryFilter}
-            onChange={(e) => setCategoryFilter(e.target.value)}
-            className="category-filter"
-          >
-            <option value="all">All Categories</option>
-            <option value="salon">Salon</option>
-            <option value="clinic">Clinic</option>
-            <option value="legal">Legal</option>
-            <option value="tutoring">Tutoring</option>
-            <option value="mechanic">Mechanic</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
-      </div>
+     
+<div className="search-section">
+  <div className="search-container">
+    <div className="search-input-wrapper">
+      <span className="search-icon">🔍</span>
+      <input
+        type="text"
+        placeholder="Search by business name or description..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="search-input"
+      />
+      {searchTerm && (
+        <button 
+          onClick={() => setSearchTerm('')}
+          className="clear-search"
+        >
+          ✕
+        </button>
+      )}
+    </div>
+    <select
+      value={categoryFilter}
+      onChange={(e) => setCategoryFilter(e.target.value)}
+      className="category-filter"
+    >
+      <option value="all">All Categories</option>
+      <option value="salon">💇 Salon</option>
+      <option value="clinic">🏥 Clinic</option>
+      <option value="legal">⚖️ Legal</option>
+      <option value="tutoring">📚 Tutoring</option>
+      <option value="mechanic">🔧 Mechanic</option>
+      <option value="other">📋 Other</option>
+    </select>
+  </div>
+</div>
 
       {/* Business Grid */}
       <div className="content-container">

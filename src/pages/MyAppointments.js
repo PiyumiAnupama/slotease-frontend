@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import './MyAppointments.css';
+import Toast from '../components/Toast';
 
 function MyAppointments() {
+  const navigate = useNavigate();
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+  const [toast, setToast] = useState(null);
 
   useEffect(() => {
     fetchAppointments();
@@ -30,10 +32,13 @@ function MyAppointments() {
 
     try {
       await api.patch(`/appointments/${appointmentId}/cancel`);
-      alert('Appointment cancelled successfully');
-      fetchAppointments(); // Refresh the list
+      setToast({ message: 'Appointment cancelled successfully', type: 'success' });
+      fetchAppointments();
     } catch (error) {
-      alert(error.response?.data?.message || 'Failed to cancel appointment');
+      setToast({
+        message: error.response?.data?.message || 'Failed to cancel appointment',
+        type: 'error'
+      });
     }
   };
 
@@ -49,10 +54,10 @@ function MyAppointments() {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
     });
   };
 
@@ -89,8 +94,8 @@ function MyAppointments() {
             <div key={appointment._id} className="appointment-card">
               <div className="appointment-header">
                 <h3>{appointment.service?.name}</h3>
-                <span 
-                  className="status-badge" 
+                <span
+                  className="status-badge"
                   style={{ backgroundColor: getStatusColor(appointment.status) }}
                 >
                   {appointment.status}
@@ -137,6 +142,14 @@ function MyAppointments() {
             </div>
           ))}
         </div>
+      )}
+
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
       )}
     </div>
   );
