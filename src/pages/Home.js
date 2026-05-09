@@ -32,10 +32,16 @@ function Home() {
     navigate('/login');
   };
 
+  // FIXED FILTER FUNCTION
   const filteredBusinesses = businesses.filter((business) => {
-    const matchesSearch = business.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         business.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const searchLower = searchTerm.toLowerCase();
+    const matchesSearch = 
+      business.name.toLowerCase().includes(searchLower) ||
+      business.description.toLowerCase().includes(searchLower) ||
+      business.address.city.toLowerCase().includes(searchLower);
+    
     const matchesCategory = categoryFilter === 'all' || business.category === categoryFilter;
+    
     return matchesSearch && matchesCategory;
   });
 
@@ -79,42 +85,42 @@ function Home() {
         </div>
       </section>
 
-     
-<div className="search-section">
-  <div className="search-container">
-    <div className="search-input-wrapper">
-      <span className="search-icon">🔍</span>
-      <input
-        type="text"
-        placeholder="Search by business name or description..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        className="search-input"
-      />
-      {searchTerm && (
-        <button 
-          onClick={() => setSearchTerm('')}
-          className="clear-search"
-        >
-          ✕
-        </button>
-      )}
-    </div>
-    <select
-      value={categoryFilter}
-      onChange={(e) => setCategoryFilter(e.target.value)}
-      className="category-filter"
-    >
-      <option value="all">All Categories</option>
-      <option value="salon">💇 Salon</option>
-      <option value="clinic">🏥 Clinic</option>
-      <option value="legal">⚖️ Legal</option>
-      <option value="tutoring">📚 Tutoring</option>
-      <option value="mechanic">🔧 Mechanic</option>
-      <option value="other">📋 Other</option>
-    </select>
-  </div>
-</div>
+      {/* Search & Filter */}
+      <div className="search-section">
+        <div className="search-container">
+          <div className="search-input-wrapper">
+            <span className="search-icon">🔍</span>
+            <input
+              type="text"
+              placeholder="Search by business name or description..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="search-input"
+            />
+            {searchTerm && (
+              <button 
+                onClick={() => setSearchTerm('')}
+                className="clear-search"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+          <select
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value)}
+            className="category-filter"
+          >
+            <option value="all">All Categories</option>
+            <option value="salon">💇 Salon</option>
+            <option value="clinic">🏥 Clinic</option>
+            <option value="legal">⚖️ Legal</option>
+            <option value="tutoring">📚 Tutoring</option>
+            <option value="mechanic">🔧 Mechanic</option>
+            <option value="other">📋 Other</option>
+          </select>
+        </div>
+      </div>
 
       {/* Business Grid */}
       <div className="content-container">
@@ -125,6 +131,17 @@ function Home() {
         {filteredBusinesses.length === 0 ? (
           <div className="empty-state">
             <p>No businesses found matching your criteria</p>
+            {(searchTerm || categoryFilter !== 'all') && (
+              <button 
+                onClick={() => {
+                  setSearchTerm('');
+                  setCategoryFilter('all');
+                }}
+                className="btn-primary"
+              >
+                Clear Filters
+              </button>
+            )}
           </div>
         ) : (
           <div className="business-grid">

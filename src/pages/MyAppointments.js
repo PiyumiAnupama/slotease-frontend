@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
-import './MyAppointments.css';
 import Toast from '../components/Toast';
+import './MyAppointments.css';
 
 function MyAppointments() {
-  const navigate = useNavigate();
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchAppointments();
@@ -17,9 +17,14 @@ function MyAppointments() {
   const fetchAppointments = async () => {
     try {
       const response = await api.get('/appointments');
-      setAppointments(response.data.appointments);
+      console.log('Appointments fetched:', response.data); // Debug log
+      setAppointments(response.data.appointments || []);
     } catch (error) {
       console.error('Error fetching appointments:', error);
+      setToast({ 
+        message: 'Failed to load appointments', 
+        type: 'error' 
+      });
     } finally {
       setLoading(false);
     }
@@ -35,9 +40,9 @@ function MyAppointments() {
       setToast({ message: 'Appointment cancelled successfully', type: 'success' });
       fetchAppointments();
     } catch (error) {
-      setToast({
-        message: error.response?.data?.message || 'Failed to cancel appointment',
-        type: 'error'
+      setToast({ 
+        message: error.response?.data?.message || 'Failed to cancel appointment', 
+        type: 'error' 
       });
     }
   };
@@ -54,10 +59,10 @@ function MyAppointments() {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+    return date.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
     });
   };
 
@@ -93,9 +98,9 @@ function MyAppointments() {
           {appointments.map((appointment) => (
             <div key={appointment._id} className="appointment-card">
               <div className="appointment-header">
-                <h3>{appointment.service?.name}</h3>
-                <span
-                  className="status-badge"
+                <h3>{appointment.service?.name || 'Service'}</h3>
+                <span 
+                  className="status-badge" 
                   style={{ backgroundColor: getStatusColor(appointment.status) }}
                 >
                   {appointment.status}
@@ -103,7 +108,7 @@ function MyAppointments() {
               </div>
 
               <div className="appointment-business">
-                <strong>{appointment.business?.name}</strong>
+                <strong>{appointment.business?.name || 'Business'}</strong>
               </div>
 
               <div className="appointment-details">
@@ -121,7 +126,7 @@ function MyAppointments() {
                 </div>
                 <div className="detail-row">
                   <span className="icon">📞</span>
-                  <span>{appointment.business?.contactPhone}</span>
+                  <span>{appointment.business?.contactPhone || 'N/A'}</span>
                 </div>
               </div>
 

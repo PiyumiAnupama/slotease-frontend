@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import api from '../services/api';
+import Toast from '../components/Toast';
 import './MyBusiness.css';
 
 function MyBusiness() {
@@ -11,6 +12,7 @@ function MyBusiness() {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
+  const [toast, setToast] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,7 +21,7 @@ function MyBusiness() {
       return;
     }
     fetchBusinessData();
-  }, [user]);
+  }, [user, navigate]);
 
   const fetchBusinessData = async () => {
     try {
@@ -28,16 +30,19 @@ function MyBusiness() {
         api.get('/appointments')
       ]);
       
-      setBusinesses(businessRes.data.businesses);
-      setAppointments(appointmentRes.data.appointments);
+      console.log('Business data:', businessRes.data); // Debug
+      console.log('Appointments:', appointmentRes.data); // Debug
+      
+      setBusinesses(businessRes.data.businesses || []);
+      setAppointments(appointmentRes.data.appointments || []);
 
-      // Fetch services for the first business
-      if (businessRes.data.businesses.length > 0) {
+      if (businessRes.data.businesses && businessRes.data.businesses.length > 0) {
         const serviceRes = await api.get(`/services/business/${businessRes.data.businesses[0]._id}`);
-        setServices(serviceRes.data.services);
+        setServices(serviceRes.data.services || []);
       }
     } catch (error) {
       console.error('Error fetching business data:', error);
+      setToast({ message: 'Failed to load business data', type: 'error' });
     } finally {
       setLoading(false);
     }
@@ -46,10 +51,13 @@ function MyBusiness() {
   const handleStatusUpdate = async (appointmentId, newStatus) => {
     try {
       await api.patch(`/appointments/${appointmentId}/status`, { status: newStatus });
-      alert('Status updated successfully');
+      setToast({ message: 'Status updated successfully', type: 'success' });
       fetchBusinessData();
     } catch (error) {
-      alert(error.response?.data?.message || 'Failed to update status');
+      setToast({ 
+        message: error.response?.data?.message || 'Failed to update status', 
+        type: 'error' 
+      });
     }
   };
 
@@ -77,28 +85,28 @@ function MyBusiness() {
     );
   }
 
-  if (businesses.length === 0) {
+  if (!businesses || businesses.length === 0) {
     return (
       <div className="no-business-container">
-       <button onClick={() => navigate('/register-business')} className="btn-primary">
-  Register Your Business
-</button>
+        <button onClick={() => navigate('/')} className="back-button">
+          ← Back to Home
+        </button>
         <div className="empty-state">
           <div className="empty-icon">🏢</div>
           <h2>No Business Registered</h2>
           <p>You haven't registered a business yet.</p>
           <p className="helper-text">
-            To register your business, please contact the administrator or use the business registration form.
+            Register your business to start accepting appointments from customers.
           </p>
           <button onClick={() => navigate('/register-business')} className="btn-primary">
-  Register Your Business
-</button>
+            Register Your Business
+          </button>
         </div>
       </div>
     );
   }
 
-  const business = businesses[0]; // For now, show first business
+  const business = businesses[0];
 
   return (
     <div className="my-business-container">
@@ -114,7 +122,6 @@ function MyBusiness() {
           </div>
         </div>
 
-        {/* Tabs */}
         <div className="tabs">
           <button
             className={activeTab === 'overview' ? 'tab active' : 'tab'}
@@ -136,7 +143,6 @@ function MyBusiness() {
           </button>
         </div>
 
-        {/* Tab Content */}
         <div className="tab-content">
           {activeTab === 'overview' && (
             <div className="overview-section">
@@ -187,7 +193,7 @@ function MyBusiness() {
             <div className="services-section">
               {services.length === 0 ? (
                 <div className="empty-message">
-                  <p>No services added yet.</p>
+                  <p>No services added yet. Contact administrator to add services.</p>
                 </div>
               ) : (
                 <div className="services-list">
@@ -260,6 +266,14 @@ function MyBusiness() {
           )}
         </div>
       </div>
+
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
     </div>
   );
 }
