@@ -8,18 +8,9 @@ import BusinessDetail from './pages/BusinessDetail';
 import BookAppointment from './pages/BookAppointment';
 import MyAppointments from './pages/MyAppointments';
 import MyBusiness from './pages/MyBusiness';
-import NotFound from './pages/NotFound';
 import RegisterBusiness from './pages/RegisterBusiness';
+import NotFound from './pages/NotFound';
 
-
-<Route
-  path="/register-business"
-  element={
-    <ProtectedRoute>
-      <RegisterBusiness />
-    </ProtectedRoute>
-  }
-/>
 // Protected Route Component
 function ProtectedRoute({ children }) {
   const { user, loading } = useContext(AuthContext);
@@ -30,9 +21,19 @@ function ProtectedRoute({ children }) {
         minHeight: '100vh', 
         display: 'flex', 
         alignItems: 'center', 
-        justifyContent: 'center' 
+        justifyContent: 'center',
+        flexDirection: 'column',
+        gap: '16px'
       }}>
-        Loading...
+        <div style={{
+          width: '40px',
+          height: '40px',
+          border: '4px solid #e2e8f0',
+          borderTopColor: '#667eea',
+          borderRadius: '50%',
+          animation: 'spin 0.8s linear infinite'
+        }}></div>
+        <p>Loading...</p>
       </div>
     );
   }
@@ -47,6 +48,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          
           <Route
             path="/"
             element={
@@ -55,6 +57,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+          
           <Route
             path="/business/:id"
             element={
@@ -63,6 +66,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+          
           <Route
             path="/book/:serviceId"
             element={
@@ -71,31 +75,39 @@ function App() {
               </ProtectedRoute>
             }
           />
+          
           <Route
-  path="/my-appointments"
-  element={
-    <ProtectedRoute>
-      <MyAppointments />
-    </ProtectedRoute>
-  }
-/>
-<Route
-  path="/my-business"
-  element={
-    <ProtectedRoute>
-      <MyBusiness />
-    </ProtectedRoute>
-  }
-/>
-
-<Route path="*" element={<NotFound />} />
+            path="/my-appointments"
+            element={
+              <ProtectedRoute>
+                <MyAppointments />
+              </ProtectedRoute>
+            }
+          />
+          
+          <Route
+            path="/my-business"
+            element={
+              <ProtectedRoute>
+                <MyBusiness />
+              </ProtectedRoute>
+            }
+          />
+          
+          <Route
+            path="/register-business"
+            element={
+              <ProtectedRoute>
+                <RegisterBusiness />
+              </ProtectedRoute>
+            }
+          />
+          
+          <Route path="*" element={<NotFound />} />
         </Routes>
-        
       </Router>
-      
     </AuthProvider>
   );
 }
-
 
 export default App;

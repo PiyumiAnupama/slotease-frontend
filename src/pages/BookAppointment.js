@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import Toast from '../components/Toast';
 import './BookAppointment.css';
 
 function BookAppointment() {
@@ -18,7 +19,7 @@ function BookAppointment() {
   });
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState('');
+  const [toast, setToast] = useState(null);
   const [success, setSuccess] = useState(false);
 
   // Generate time slots (9 AM to 6 PM, 30-minute intervals)
@@ -26,7 +27,7 @@ function BookAppointment() {
     const slots = [];
     for (let hour = 9; hour <= 18; hour++) {
       for (let minute = 0; minute < 60; minute += 30) {
-        if (hour === 18 && minute > 0) break; // Stop at 6:00 PM
+        if (hour === 18 && minute > 0) break;
         const time = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
         slots.push(time);
       }
@@ -43,19 +44,20 @@ function BookAppointment() {
   const fetchServiceDetails = async () => {
     try {
       const response = await api.get(`/services/${serviceId}`);
+      console.log('Service details:', response.data); // Debug
       setService(response.data.service);
       setBusiness(response.data.service.business);
       
-      // Pre-fill customer data from user context if available
+      // Pre-fill customer data
       const userResponse = await api.get('/auth/me');
       setFormData(prev => ({
         ...prev,
-        customerName: userResponse.data.name,
-        customerEmail: userResponse.data.email
+        customerName: userResponse.data.name || '',
+        customerEmail: userResponse.data.email || ''
       }));
     } catch (error) {
       console.error('Error fetching service:', error);
-      setError('Service not found');
+      setToast({ message: 'Service not found', type: 'error' });
     } finally {
       setLoading(false);
     }
@@ -63,31 +65,45 @@ function BookAppointment() {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    setError('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
     setSubmitting(true);
 
     try {
-      await api.post('/appointments', {
+      const appointmentData = {
         service: serviceId,
-        ...formData
-      });
+        appointmentDate: formData.appointmentDate,
+        startTime: formData.startTime,
+        customerName: formData.customerName,
+        customerEmail: formData.customerEmail,
+        customerPhone: formData.customerPhone,
+        notes: formData.notes
+      };
+
+      console.log('Submitting appointment:', appointmentData); // Debug
+
+      const response = await api.post('/appointments', appointmentData);
+      console.log('Appointment created:', response.data); // Debug
+
       setSuccess(true);
+      setToast({ message: 'Appointment booked successfully!', type: 'success' });
+      
       setTimeout(() => {
         navigate('/my-appointments');
       }, 2000);
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to create appointment');
+      console.error('Booking error:', err.response?.data); // Debug
+      setToast({ 
+        message: err.response?.data?.message || 'Failed to create appointment', 
+        type: 'error' 
+      });
     } finally {
       setSubmitting(false);
     }
   };
 
-  // Get minimum date (today)
   const getMinDate = () => {
     const today = new Date();
     return today.toISOString().split('T')[0];
@@ -103,15 +119,15 @@ function BookAppointment() {
   }
 
   if (!service || !business) {
-  return (
-    <div className="error-container">
-      <h2>Service not found</h2>
-      <button onClick={() => navigate('/')} className="btn-primary">
-        Back to Home
-      </button>
-    </div>
-  );
-}
+    return (
+      <div className="error-container">
+        <h2>Service not found</h2>
+        <button onClick={() => navigate('/')} className="btn-primary">
+          Back to Home
+        </button>
+      </div>
+    );
+  }
 
   if (success) {
     return (
@@ -119,7 +135,7 @@ function BookAppointment() {
         <div className="success-icon">✓</div>
         <h2>Appointment Booked!</h2>
         <p>Your appointment has been successfully created.</p>
-        <p>Redirecting to your appointments...</p>
+        <p className="redirect-text">Redirecting to your appointments...</p>
       </div>
     );
   }
@@ -136,7 +152,7 @@ function BookAppointment() {
           <h2>Booking Details</h2>
           <div className="summary-card">
             <h3>{service.name}</h3>
-            <p className="business-name">{business?.name}</p>
+            <p className="business-name">{business.name}</p>
             <div className="summary-details">
               <div className="detail-item">
                 <span className="label">Duration:</span>
@@ -148,8 +164,8 @@ function BookAppointment() {
               </div>
               <div className="detail-item">
                 <span className="label">Location:</span>
-                <span className="value">{business?.address?.city || 'N/A'}</span>
-            </div>
+                <span className="value">{business.address?.city || 'N/A'}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -157,8 +173,6 @@ function BookAppointment() {
         {/* Booking Form */}
         <div className="booking-form-section">
           <h2>Select Date & Time</h2>
-          
-          {error && <div className="error-message">{error}</div>}
 
           <form onSubmit={handleSubmit}>
             <div className="form-group">
@@ -249,6 +263,14 @@ function BookAppointment() {
           </form>
         </div>
       </div>
+
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
     </div>
   );
 }

@@ -19,7 +19,6 @@ function RegisterBusiness() {
     state: '',
     zipCode: '',
     country: 'Sri Lanka',
-    // Operating hours
     mondayOpen: '09:00',
     mondayClose: '18:00',
     tuesdayOpen: '09:00',
@@ -86,8 +85,8 @@ function RegisterBusiness() {
 
   return (
     <div className="register-business-container">
-      <button onClick={() => navigate('/')} className="back-button">
-        ← Back to Home
+      <button onClick={() => navigate(-1)} className="back-button">
+        ← Back
       </button>
 
       <div className="register-business-card">
@@ -123,18 +122,16 @@ function RegisterBusiness() {
               ></textarea>
             </div>
 
-            <div className="form-row">
-              <div className="form-group">
-                <label>Category *</label>
-                <select name="category" value={formData.category} onChange={handleChange}>
-                  <option value="salon">💇 Salon</option>
-                  <option value="clinic">🏥 Clinic</option>
-                  <option value="legal">⚖️ Legal</option>
-                  <option value="tutoring">📚 Tutoring</option>
-                  <option value="mechanic">🔧 Mechanic</option>
-                  <option value="other">📋 Other</option>
-                </select>
-              </div>
+            <div className="form-group">
+              <label>Category *</label>
+              <select name="category" value={formData.category} onChange={handleChange} required>
+                <option value="salon">💇 Salon</option>
+                <option value="clinic">🏥 Clinic</option>
+                <option value="legal">⚖️ Legal</option>
+                <option value="tutoring">📚 Tutoring</option>
+                <option value="mechanic">🔧 Mechanic</option>
+                <option value="other">📋 Other</option>
+              </select>
             </div>
           </div>
 
