@@ -43,20 +43,28 @@ function BookAppointment() {
 
   const fetchServiceDetails = async () => {
     try {
+      console.log('=== FETCHING SERVICE ===');
+      console.log('Service ID:', serviceId);
+
       const response = await api.get(`/services/${serviceId}`);
-      console.log('Service details:', response.data); // Debug
+      console.log('Service response:', response.data);
+      
       setService(response.data.service);
       setBusiness(response.data.service.business);
       
       // Pre-fill customer data
       const userResponse = await api.get('/auth/me');
+      console.log('User data:', userResponse.data);
+      
       setFormData(prev => ({
         ...prev,
         customerName: userResponse.data.name || '',
         customerEmail: userResponse.data.email || ''
       }));
     } catch (error) {
-      console.error('Error fetching service:', error);
+      console.error('=== ERROR FETCHING SERVICE ===');
+      console.error('Error:', error);
+      console.error('Response:', error.response?.data);
       setToast({ message: 'Service not found', type: 'error' });
     } finally {
       setLoading(false);
@@ -82,10 +90,14 @@ function BookAppointment() {
         notes: formData.notes
       };
 
-      console.log('Submitting appointment:', appointmentData); // Debug
+      console.log('=== BOOKING APPOINTMENT ===');
+      console.log('Data being sent:', appointmentData);
 
       const response = await api.post('/appointments', appointmentData);
-      console.log('Appointment created:', response.data); // Debug
+      
+      console.log('=== APPOINTMENT CREATED SUCCESSFULLY ===');
+      console.log('Response:', response.data);
+      console.log('Appointment ID:', response.data.appointment?._id);
 
       setSuccess(true);
       setToast({ message: 'Appointment booked successfully!', type: 'success' });
@@ -94,7 +106,11 @@ function BookAppointment() {
         navigate('/my-appointments');
       }, 2000);
     } catch (err) {
-      console.error('Booking error:', err.response?.data); // Debug
+      console.error('=== BOOKING ERROR ===');
+      console.error('Error:', err);
+      console.error('Error Response:', err.response?.data);
+      console.error('Error Status:', err.response?.status);
+      
       setToast({ 
         message: err.response?.data?.message || 'Failed to create appointment', 
         type: 'error' 

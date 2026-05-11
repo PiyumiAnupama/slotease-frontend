@@ -9,9 +9,10 @@ import BookAppointment from './pages/BookAppointment';
 import MyAppointments from './pages/MyAppointments';
 import MyBusiness from './pages/MyBusiness';
 import RegisterBusiness from './pages/RegisterBusiness';
+import AddService from './pages/AddService';
 import NotFound from './pages/NotFound';
+import BottomNav from './components/BottomNav'; // ADD THIS
 
-// Protected Route Component
 function ProtectedRoute({ children }) {
   const { user, loading } = useContext(AuthContext);
 
@@ -103,8 +104,20 @@ function App() {
             }
           />
           
+          <Route
+            path="/add-service"
+            element={
+              <ProtectedRoute>
+                <AddService />
+              </ProtectedRoute>
+            }
+          />
+          
           <Route path="*" element={<NotFound />} />
         </Routes>
+        
+        {/* ADD BOTTOM NAV HERE */}
+        <BottomNav />
       </Router>
     </AuthProvider>
   );

@@ -42,3 +42,14 @@
 .not-found-actions .btn-secondary {
   min-width: 140px;
 }
+/* Add padding for bottom nav on mobile */
+@media (max-width: 1023px) {
+  .home-container,
+  .my-appointments-container,
+  .my-business-container,
+  .book-appointment-container,
+  .register-business-container,
+  .add-service-container {
+    padding-bottom: 90px !important;
+  }
+}

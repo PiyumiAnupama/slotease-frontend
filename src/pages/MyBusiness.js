@@ -25,23 +25,28 @@ function MyBusiness() {
 
   const fetchBusinessData = async () => {
     try {
+      console.log('=== FETCHING BUSINESS DATA ===');
+      
       const [businessRes, appointmentRes] = await Promise.all([
         api.get('/businesses/my-businesses'),
         api.get('/appointments')
       ]);
       
-      console.log('Business data:', businessRes.data); // Debug
-      console.log('Appointments:', appointmentRes.data); // Debug
+      console.log('Businesses:', businessRes.data);
+      console.log('Appointments:', appointmentRes.data);
       
       setBusinesses(businessRes.data.businesses || []);
       setAppointments(appointmentRes.data.appointments || []);
 
       if (businessRes.data.businesses && businessRes.data.businesses.length > 0) {
         const serviceRes = await api.get(`/services/business/${businessRes.data.businesses[0]._id}`);
+        console.log('Services:', serviceRes.data);
         setServices(serviceRes.data.services || []);
       }
     } catch (error) {
-      console.error('Error fetching business data:', error);
+      console.error('=== ERROR FETCHING BUSINESS DATA ===');
+      console.error('Error:', error);
+      console.error('Response:', error.response?.data);
       setToast({ message: 'Failed to load business data', type: 'error' });
     } finally {
       setLoading(false);
@@ -50,10 +55,18 @@ function MyBusiness() {
 
   const handleStatusUpdate = async (appointmentId, newStatus) => {
     try {
+      console.log('=== UPDATING APPOINTMENT STATUS ===');
+      console.log('Appointment ID:', appointmentId);
+      console.log('New Status:', newStatus);
+
       await api.patch(`/appointments/${appointmentId}/status`, { status: newStatus });
       setToast({ message: 'Status updated successfully', type: 'success' });
       fetchBusinessData();
     } catch (error) {
+      console.error('=== ERROR UPDATING STATUS ===');
+      console.error('Error:', error);
+      console.error('Response:', error.response?.data);
+      
       setToast({ 
         message: error.response?.data?.message || 'Failed to update status', 
         type: 'error' 
@@ -191,9 +204,20 @@ function MyBusiness() {
 
           {activeTab === 'services' && (
             <div className="services-section">
+              <div className="services-header">
+                <h3>Your Services</h3>
+                <button 
+                  onClick={() => navigate('/add-service')}
+                  className="btn-add-service"
+                >
+                  + Add Service
+                </button>
+              </div>
+
               {services.length === 0 ? (
                 <div className="empty-message">
-                  <p>No services added yet. Contact administrator to add services.</p>
+                  <p>No services added yet.</p>
+                  <p>Click "Add Service" above to create your first service.</p>
                 </div>
               ) : (
                 <div className="services-list">
