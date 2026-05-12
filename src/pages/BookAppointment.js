@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import Toast from '../components/Toast';
@@ -22,7 +22,6 @@ function BookAppointment() {
   const [toast, setToast] = useState(null);
   const [success, setSuccess] = useState(false);
 
-  // Generate time slots (9 AM to 6 PM, 30-minute intervals)
   const generateTimeSlots = () => {
     const slots = [];
     for (let hour = 9; hour <= 18; hour++) {
@@ -37,11 +36,7 @@ function BookAppointment() {
 
   const timeSlots = generateTimeSlots();
 
-  useEffect(() => {
-    fetchServiceDetails();
-  }, [serviceId]);
-
-  const fetchServiceDetails = async () => {
+  const fetchServiceDetails = useCallback(async () => {
     try {
       console.log('=== FETCHING SERVICE ===');
       console.log('Service ID:', serviceId);
@@ -52,7 +47,6 @@ function BookAppointment() {
       setService(response.data.service);
       setBusiness(response.data.service.business);
       
-      // Pre-fill customer data
       const userResponse = await api.get('/auth/me');
       console.log('User data:', userResponse.data);
       
@@ -69,7 +63,11 @@ function BookAppointment() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [serviceId]);
+
+  useEffect(() => {
+    fetchServiceDetails();
+  }, [fetchServiceDetails]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -163,7 +161,6 @@ function BookAppointment() {
       </button>
 
       <div className="booking-layout">
-        {/* Service Summary */}
         <div className="service-summary">
           <h2>Booking Details</h2>
           <div className="summary-card">
@@ -186,7 +183,6 @@ function BookAppointment() {
           </div>
         </div>
 
-        {/* Booking Form */}
         <div className="booking-form-section">
           <h2>Select Date & Time</h2>
 
