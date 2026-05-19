@@ -1,0 +1,100 @@
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 2px solid #e2e8f0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 8px 0;
+  padding-bottom: max(8px, env(safe-area-inset-bottom));
+  z-index: 1000;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 10px 16px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 10px;
+  min-width: 75px;
+  position: relative;
+}
+
+.nav-item:active {
+  transform: scale(0.95);
+}
+
+.nav-icon {
+  font-size: 26px;
+  transition: all 0.2s ease;
+  line-height: 1;
+}
+
+.nav-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: #718096;
+  transition: all 0.2s ease;
+  line-height: 1.2;
+}
+
+.nav-item.active {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+}
+
+.nav-item.active .nav-icon {
+  transform: scale(1.15);
+}
+
+.nav-item.active .nav-label {
+  color: #667eea;
+  font-weight: 700;
+}
+
+.nav-item:hover:not(.active) {
+  background: #f7fafc;
+}
+
+/* Active indicator dot */
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  top: 6px;
+  width: 4px;
+  height: 4px;
+  background: #667eea;
+  border-radius: 50%;
+}
+
+/* Hide on desktop - only show on mobile/tablet */
+@media (min-width: 1024px) {
+  .bottom-nav {
+    display: none;
+  }
+}
+
+/* Tablet adjustments */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .nav-item {
+    min-width: 90px;
+    padding: 12px 20px;
+  }
+  
+  .nav-icon {
+    font-size: 28px;
+  }
+  
+  .nav-label {
+    font-size: 12px;
+  }
+}
