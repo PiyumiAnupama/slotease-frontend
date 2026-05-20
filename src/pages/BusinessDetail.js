@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import Toast from '../components/Toast';
 import './BusinessDetail.css';
 
 function BusinessDetail() {
@@ -9,24 +10,42 @@ function BusinessDetail() {
   const [business, setBusiness] = useState(null);
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [toast, setToast] = useState(null);
 
-  useEffect(() => {
-    fetchBusinessAndServices();
-  }, [id]);
-
-  const fetchBusinessAndServices = async () => {
+  const fetchBusinessAndServices = useCallback(async () => {
     try {
       const [businessRes, servicesRes] = await Promise.all([
         api.get(`/businesses/${id}`),
         api.get(`/services/business/${id}`)
       ]);
+
       setBusiness(businessRes.data.business);
       setServices(servicesRes.data.services);
     } catch (error) {
       console.error('Error fetching data:', error);
+      setToast({ message: 'Failed to load business details', type: 'error' });
     } finally {
       setLoading(false);
     }
+  }, [id]);
+
+  useEffect(() => {
+    fetchBusinessAndServices();
+  }, [fetchBusinessAndServices]);
+
+  const formatOperatingHours = (hours) => {
+    if (!hours) return {};
+    
+    const daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+    const formatted = {};
+    
+    daysOfWeek.forEach(day => {
+      if (hours[day]) {
+        formatted[day] = hours[day];
+      }
+    });
+    
+    return formatted;
   };
 
   if (loading) {
@@ -49,10 +68,12 @@ function BusinessDetail() {
     );
   }
 
+  const operatingHours = formatOperatingHours(business.operatingHours);
+
   return (
     <div className="business-detail-container">
-      <button onClick={() => navigate('/')} className="back-button">
-        ← Back to Businesses
+      <button onClick={() => navigate(-1)} className="back-button">
+        ← Back
       </button>
 
       <div className="business-header">
@@ -60,55 +81,80 @@ function BusinessDetail() {
           <h1>{business.name}</h1>
           <span className="category-badge">{business.category}</span>
         </div>
-        <p className="business-description-full">{business.description}</p>
+        <p className="business-description">{business.description}</p>
+      </div>
 
-        <div className="business-contact-info">
-          <div className="contact-item">
-            <span className="icon">📍</span>
-            <span>{business.address.street}, {business.address.city}, {business.address.state}</span>
+      <div className="business-info-section">
+        <h2>Contact Information</h2>
+        <div className="info-grid">
+          <div className="info-item">
+            <span className="info-label">📞 Phone:</span>
+            <span className="info-value">{business.contactPhone}</span>
           </div>
-          <div className="contact-item">
-            <span className="icon">📞</span>
-            <span>{business.contactPhone}</span>
+          <div className="info-item">
+            <span className="info-label">📧 Email:</span>
+            <span className="info-value">{business.contactEmail}</span>
           </div>
-          <div className="contact-item">
-            <span className="icon">✉️</span>
-            <span>{business.contactEmail}</span>
+          <div className="info-item">
+            <span className="info-label">📍 Address:</span>
+            <span className="info-value">
+              {business.address?.street}, {business.address?.city}, {business.address?.province}
+            </span>
           </div>
+        </div>
+      </div>
+
+      <div className="operating-hours-section">
+        <h2>Operating Hours</h2>
+        <div className="hours-grid">
+          {Object.entries(operatingHours).map(([day, hours]) => (
+            <div key={day} className="hours-item">
+              <span className="day-name">{day.charAt(0).toUpperCase() + day.slice(1)}</span>
+              <span className="hours-time">
+                {hours.open === 'Closed' ? 'Closed' : `${hours.open} - ${hours.close}`}
+              </span>
+            </div>
+          ))}
         </div>
       </div>
 
       <div className="services-section">
         <h2>Available Services</h2>
         {services.length === 0 ? (
-          <div className="empty-state">
-            <p>No services available at the moment</p>
-          </div>
+          <p className="no-services">No services available at this time.</p>
         ) : (
           <div className="services-grid">
             {services.map((service) => (
               <div key={service._id} className="service-card">
                 <div className="service-header">
                   <h3>{service.name}</h3>
-                  <div className="service-price">
+                  <span className="service-price">
                     {service.currency} {service.price.toLocaleString()}
-                  </div>
+                  </span>
                 </div>
                 <p className="service-description">{service.description}</p>
-                <div className="service-duration">
-                  ⏱️ {service.duration} minutes
+                <div className="service-footer">
+                  <span className="service-duration">⏱️ {service.duration} minutes</span>
+                  <button
+                    className="btn-book"
+                    onClick={() => navigate(`/book/${service._id}`)}
+                  >
+                    Book Now
+                  </button>
                 </div>
-                <button
-                  onClick={() => navigate(`/book/${service._id}`)}
-                  className="btn-primary"
-                >
-                  Book Now
-                </button>
               </div>
             ))}
           </div>
         )}
       </div>
+
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
     </div>
   );
 }
