@@ -1,70 +1,217 @@
-# Getting Started with Create React App
+# 📅 SlotEase - Appointment Booking Platform
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A modern React application for multi-business appointment booking in Sri Lanka.
+
+**[Live Demo](https://slotease-frontend.vercel.app)** | **[Backend API](https://slotease-backend-tdw3.onrender.com)** 
+
+---
+
+## Overview
+
+SlotEase is a full-stack MERN appointment booking platform that helps Sri Lankan SMBs (salons, clinics, legal services, tutoring, mechanic shops) manage customer appointments efficiently while providing customers with 24/7 online booking convenience.
+
+---
+
+## Key Features
+
+### For Customers
+- 🔐 Secure registration and login with JWT authentication
+- 🔍 Search and filter businesses by category
+- 📅 Easy appointment booking with date/time selection
+- 📋 View and manage personal appointments
+- 📱 Mobile-responsive design 
+
+### For Business Owners
+- 🏪 Create and manage business profile
+- 📝 Add and manage services
+- 📊 View and confirm customer appointments
+- 🕐 Set custom operating hours
+
+---
+
+## Tech Stack
+
+**Frontend:**
+- React 18 with React Router v6
+- Axios for API calls
+- Context API for state management
+- CSS3 with responsive design
+
+**Backend:**
+- Node.js & Express
+- MongoDB with Mongoose
+- JWT authentication
+- Bcryptjs for password hashing
+
+**Deployment:**
+- Frontend: Vercel
+- Backend: Render
+- Database: MongoDB Atlas
+
+---
+
+## Getting Started
+
+### Prerequisites
+- Node.js v18+
+- npm or yarn
+
+### Installation
+
+```bash
+# Clone repository
+git clone https://github.com/PiyumiAnupama/slotease-frontend.git
+cd slotease-frontend
+
+# Install dependencies
+npm install
+
+# Create .env file
+echo "REACT_APP_API_URL=http://localhost:3000/api" > .env
+
+# Start development server
+npm start
+```
+
+Open http://localhost:3001 in your browser.
+
+---
 
 ## Available Scripts
 
-In the project directory, you can run:
+```bash
+npm start      # Run development server
+npm run build  # Build for production
+npm test       # Run tests
+```
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Environment Variables
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Development (`.env`)
+```
+REACT_APP_API_URL=http://localhost:3000/api
+```
 
-### `npm test`
+### Production (`.env.production`)
+```
+REACT_APP_API_URL=https://slotease-backend-tdw3.onrender.com/api
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## Project Structure
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```
+src/
+├── components/          # Reusable components
+│   ├── BottomNav.js    # Mobile navigation
+│   └── Toast.js        # Notifications
+├── context/            # Global state
+│   └── AuthContext.js  # Auth management
+├── pages/              # Page components
+│   ├── Login.js
+│   ├── Home.js
+│   ├── BusinessDetail.js
+│   ├── BookAppointment.js
+│   ├── MyAppointments.js
+│   ├── MyBusiness.js
+│   └── ...
+├── services/
+│   └── api.js          # Axios configuration
+└── App.js              # Main app component
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Key Components
 
-### `npm run eject`
+| Component | Purpose |
+|-----------|---------|
+| AuthContext | Manages user login/logout and JWT tokens |
+| BottomNav | Mobile-friendly navigation (home, appointments, business, profile) |
+| BookAppointment | Appointment booking form with date/time selection |
+| BusinessDetail | Shows business info, hours, and available services |
+| MyAppointments | Lists customer's appointments with status tracking |
+| MyBusiness | Business owner dashboard for managing appointments |
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+---
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## API Endpoints Used
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+| Endpoint | Method | Purpose |
+|----------|--------|---------|
+| `/auth/register` | POST | User registration |
+| `/auth/login` | POST | User login |
+| `/businesses` | GET | Get all businesses |
+| `/businesses/:id` | GET | Get business details |
+| `/services/business/:id` | GET | Get business services |
+| `/appointments` | GET/POST | View/create appointments |
+| `/appointments/:id/status` | PATCH | Update appointment status |
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+---
 
-## Learn More
+## Features Breakdown
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Authentication
+- JWT-based login/registration
+- Tokens stored in localStorage
+- Automatic token refresh on 401 response
+- Protected routes for authenticated users
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Search & Filter
+- Real-time search by business name
+- Filter by categories: Salon, Clinic, Legal, Tutoring, Mechanic
+- Combined search and filter functionality
 
-### Code Splitting
+### Booking System
+- Interactive date picker (today onwards)
+- Time slots in 30-minute intervals
+- Automatic conflict detection
+- Price display in LKR (Sri Lankan Rupees)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### Responsive Design
+- Mobile-first approach
+- Bottom navigation for mobile/tablet
+- Desktop layout with grid system
+- Touch-friendly buttons and inputs
 
-### Analyzing the Bundle Size
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## Security Features
 
-### Making a Progressive Web App
+- 🔒 JWT tokens with 7-day expiry
+- 🔐 Bcryptjs password hashing
+- 🛡️ CORS configured for authorized origins
+- 🚫 Input validation on all forms
+- ✅ XSS protection through React
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+---
 
-### Advanced Configuration
+## Deployment
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### Deploy to Vercel
 
-### Deployment
+1. Push code to GitHub
+2. Go to vercel.com and import the repository
+3. Add environment variable: `REACT_APP_API_URL=<backend-url>`
+4. Click Deploy
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
 
-### `npm run build` fails to minify
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Author
+
+**Anupama Piyadigama**
+- Email: anupamapiyadigama@gmail.com
+- GitHub: [@PiyumiAnupama](https://github.com/PiyumiAnupama)
+---
+
+## Related Projects
+
+- **Backend Repository**: [slotease-backend](https://github.com/PiyumiAnupama/slotease-backend)
+
+---
+
+**⭐ If this project helped you, please give it a star on GitHub!**
